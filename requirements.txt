@@ -7,3 +7,4 @@ plotly
 joblib
 matplotlib
 seaborn
+streamlit_authenticator
