@@ -5,27 +5,29 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit_authenticator as stauth
 
-# ✅ Load user credentials from TOML secrets
+
+# ✅ Dynamically build credentials dict from secrets.toml
 credentials = {
     "usernames": {
-        user: {
-            "email": st.secrets[f"credentials.usernames.{user}"].email,
-            "name": st.secrets[f"credentials.usernames.{user}"].name,
-            "password": st.secrets[f"credentials.usernames.{user}"].password,
+        username: {
+            "email": user_data["email"],
+            "name": user_data["name"],
+            "password": user_data["password"]
         }
-        for user in st.secrets["credentials"]["usernames"]
+        for username, user_data in st.secrets["credentials"]["usernames"].items()
     }
 }
 
-# ✅ Setup Streamlit Authenticator
+# ✅ Initialize authenticator
 authenticator = stauth.Authenticate(
     credentials,
     "origin_churn_dashboard", "abcdef", cookie_expiry_days=1
 )
 
-# ✅ Login
+# ✅ Render login
 name, auth_status, username = authenticator.login("🔐 Login", "main")
 
+# ✅ Auth conditions
 if auth_status is False:
     st.error("❌ Incorrect username or password")
 elif auth_status is None:
