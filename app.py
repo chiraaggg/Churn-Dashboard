@@ -4,17 +4,26 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 
+# ✅ Load user credentials from TOML secrets
+credentials = {
+    "usernames": {
+        user: {
+            "email": st.secrets[f"credentials.usernames.{user}"].email,
+            "name": st.secrets[f"credentials.usernames.{user}"].name,
+            "password": st.secrets[f"credentials.usernames.{user}"].password,
+        }
+        for user in st.secrets["credentials"]["usernames"]
+    }
+}
 
-# 🔒 Load user credentials
-credentials = st.secrets["credentials"]
+# ✅ Setup Streamlit Authenticator
 authenticator = stauth.Authenticate(
     credentials,
     "origin_churn_dashboard", "abcdef", cookie_expiry_days=1
 )
 
+# ✅ Login
 name, auth_status, username = authenticator.login("🔐 Login", "main")
 
 if auth_status is False:
@@ -24,6 +33,7 @@ elif auth_status is None:
 elif auth_status:
     authenticator.logout("Logout", "sidebar")
     st.sidebar.success(f"✅ Logged in as {name}")
+
 
 st.set_page_config(page_title="Churn Prediction Dashboard", layout="wide")
 
