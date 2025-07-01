@@ -3,6 +3,27 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+
+
+# 🔒 Load user credentials
+credentials = st.secrets["credentials"]
+authenticator = stauth.Authenticate(
+    credentials,
+    "origin_churn_dashboard", "abcdef", cookie_expiry_days=1
+)
+
+name, auth_status, username = authenticator.login("🔐 Login", "main")
+
+if auth_status is False:
+    st.error("❌ Incorrect username or password")
+elif auth_status is None:
+    st.warning("🔐 Please enter your credentials")
+elif auth_status:
+    authenticator.logout("Logout", "sidebar")
+    st.sidebar.success(f"✅ Logged in as {name}")
 
 st.set_page_config(page_title="Churn Prediction Dashboard", layout="wide")
 
