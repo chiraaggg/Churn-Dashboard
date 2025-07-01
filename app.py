@@ -6,37 +6,6 @@ import seaborn as sns
 import streamlit_authenticator as stauth
 
 
-# ✅ Dynamically build credentials dict from secrets.toml
-credentials = {
-    "usernames": {
-        username: {
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "password": user_data["password"]
-        }
-        for username, user_data in st.secrets["credentials"]["usernames"].items()
-    }
-}
-
-# ✅ Initialize authenticator
-authenticator = stauth.Authenticate(
-    credentials,
-    "origin_churn_dashboard", "abcdef", cookie_expiry_days=1
-)
-
-# ✅ Render login
-name, auth_status, username = authenticator.login("🔐 Login", "main")
-
-# ✅ Auth conditions
-if auth_status is False:
-    st.error("❌ Incorrect username or password")
-elif auth_status is None:
-    st.warning("🔐 Please enter your credentials")
-elif auth_status:
-    authenticator.logout("Logout", "sidebar")
-    st.sidebar.success(f"✅ Logged in as {name}")
-
-
 st.set_page_config(page_title="Churn Prediction Dashboard", layout="wide")
 
 # 🚀 Title
